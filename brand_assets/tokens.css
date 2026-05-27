@@ -1,0 +1,227 @@
+/**
+ * PageGains design tokens — locked brand identity
+ * Import in redesign pages: <link rel="stylesheet" href="/brand_assets/tokens.css">
+ * @see brand_assets/BRAND.md
+ */
+
+:root {
+  color-scheme: light;
+
+  /* —— Primary coral (50–950) —— */
+  --pg-red-50: #fff5f3;
+  --pg-red-100: #ffe8e4;
+  --pg-red-200: #ffd0c8;
+  --pg-red-300: #ffafa3;
+  --pg-red-400: #ff7d6b;
+  --pg-red-500: #ff4d3a;
+  --pg-red-600: #e84432;
+  --pg-red-700: #c73528;
+  --pg-red-800: #a32b22;
+  --pg-red-900: #87261f;
+  --pg-red-950: #49100d;
+
+  --pg-red: var(--pg-red-500);
+  --pg-red-hover: var(--pg-red-600);
+  --pg-red-soft: #ff8a5a;
+
+  /* —— Secondary crimson (50–950) —— */
+  --pg-crimson-50: #fef2f2;
+  --pg-crimson-100: #fde3e5;
+  --pg-crimson-200: #f9c4c8;
+  --pg-crimson-300: #f499a0;
+  --pg-crimson-400: #e05d6a;
+  --pg-crimson-500: #c41e2a;
+  --pg-crimson-600: #b01b26;
+  --pg-crimson-700: #931720;
+  --pg-crimson-800: #7a161e;
+  --pg-crimson-900: #65181d;
+  --pg-crimson-950: #3a080c;
+
+  --pg-crimson: var(--pg-crimson-500);
+  --pg-crimson-deep: #9f1a22;
+
+  /* —— Neutral warm (50–950) —— */
+  --pg-neutral-50: #faf9f7;
+  --pg-neutral-100: #f6f4ef;
+  --pg-neutral-200: #ebe8e1;
+  --pg-neutral-300: #e6e3dc;
+  --pg-neutral-400: #d4d0c5;
+  --pg-neutral-500: #a8a49a;
+  --pg-neutral-600: #6b6b70;
+  --pg-neutral-700: #3a3a3d;
+  --pg-neutral-800: #2a2a2d;
+  --pg-neutral-900: #1a1a1c;
+  --pg-neutral-950: #0b0b0c;
+
+  --pg-paper: var(--pg-neutral-100);
+  --pg-paper-elevated: #ffffff;
+  --pg-ink: var(--pg-neutral-950);
+  --pg-ink-soft: var(--pg-neutral-900);
+  --pg-line: var(--pg-neutral-300);
+  --pg-line-strong: var(--pg-neutral-400);
+  --pg-mute: var(--pg-neutral-600);
+  --pg-body: var(--pg-neutral-800);
+  --pg-body-soft: var(--pg-neutral-700);
+
+  /* —— Semantic (compact) —— */
+  --pg-success-50: #f0fdf4;
+  --pg-success-500: #22c55e;
+  --pg-success-950: #052e16;
+  --pg-success: var(--pg-success-500);
+
+  --pg-warning-50: #fffbeb;
+  --pg-warning-500: #f59e0b;
+  --pg-warning-950: #451a03;
+  --pg-warning: var(--pg-warning-500);
+
+  --pg-error-50: #fef2f2;
+  --pg-error-500: #dc2626;
+  --pg-error-950: #450a0a;
+  --pg-error: var(--pg-error-500);
+
+  --pg-info-50: #f8fafc;
+  --pg-info-500: #64748b;
+  --pg-info-950: #0f172a;
+  --pg-info: var(--pg-info-500);
+
+  --pg-live: var(--pg-crimson);
+
+  /* —— Theme surfaces (light) —— */
+  --pg-surface: var(--pg-paper);
+  --pg-surface-elevated: var(--pg-paper-elevated);
+  --pg-text: var(--pg-ink);
+  --pg-text-secondary: var(--pg-body);
+  --pg-border: var(--pg-line);
+
+  /* —— Typography —— */
+  --pg-font-display: "Geist", "Geist Fallback", system-ui, sans-serif;
+  --pg-font-accent: "Instrument Serif", "Instrument Serif Fallback", Georgia, serif;
+  --pg-font-mono: "JetBrains Mono", "JetBrains Mono Fallback", ui-monospace, monospace;
+
+  --pg-text-hero: clamp(44px, 9vw, 110px);
+  --pg-text-h2: clamp(42px, 5.4vw, 78px);
+  --pg-text-h3: 28px;
+  --pg-text-lead: 22px;
+  --pg-text-body: 15px;
+  --pg-text-meta: 11px;
+  --pg-text-meta-lg: 12px;
+
+  --pg-tracking-hero: -0.045em;
+  --pg-tracking-h2: -0.035em;
+  --pg-tracking-meta: 0.14em;
+  --pg-leading-hero: 0.88;
+  --pg-leading-body: 1.5;
+  --pg-leading-lead: 1.35;
+
+  /* —— Spacing (4px base) —— */
+  --pg-space-0: 0;
+  --pg-space-1: 4px;
+  --pg-space-2: 8px;
+  --pg-space-3: 12px;
+  --pg-space-4: 16px;
+  --pg-space-5: 20px;
+  --pg-space-6: 24px;
+  --pg-space-8: 32px;
+  --pg-space-10: 40px;
+  --pg-space-12: 48px;
+  --pg-space-16: 64px;
+  --pg-space-20: 80px;
+  --pg-space-24: 96px;
+
+  /* —— Layout —— */
+  --pg-max-width: 1400px;
+  --pg-gutter: 40px;
+  --pg-gutter-sm: 20px;
+  --pg-section-y: 100px;
+  --pg-section-y-sm: 60px;
+
+  /* —— Radius —— */
+  --pg-radius-sm: 10px;
+  --pg-radius-md: 12px;
+  --pg-radius-lg: 14px;
+  --pg-radius-xl: 18px;
+  --pg-radius-pill: 999px;
+
+  /* —— Shadows —— */
+  --pg-shadow-1: 0 1px 3px rgba(11, 11, 12, 0.08);
+  --pg-shadow-2: 0 4px 12px rgba(11, 11, 12, 0.1);
+  --pg-shadow-3: 0 10px 24px rgba(11, 11, 12, 0.12);
+  --pg-shadow-4: 0 20px 40px rgba(11, 11, 12, 0.15);
+  --pg-shadow-cta: 6px 6px 0 var(--pg-red);
+  --pg-shadow-cta-ink: 6px 6px 0 var(--pg-ink);
+  --pg-shadow-highlight: 6px 6px 0 var(--pg-ink);
+  --pg-shadow-cmd: 10px 10px 0 var(--pg-red);
+  --pg-shadow-cmd-sm: 6px 6px 0 var(--pg-red);
+  --pg-shadow-float: 0 32px 80px rgba(11, 11, 12, 0.18), 0 0 0 1px rgba(11, 11, 12, 0.08);
+  --pg-shadow-glow: 0 8px 24px rgba(255, 77, 58, 0.15);
+
+  /* —— Motion —— */
+  --pg-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --pg-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --pg-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --pg-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --pg-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --pg-ease-out: var(--pg-ease-default);
+  --pg-duration-75: 75ms;
+  --pg-duration-150: 150ms;
+  --pg-duration-200: 200ms;
+  --pg-duration-300: 300ms;
+  --pg-duration-500: 500ms;
+  --pg-duration-700: 700ms;
+  --pg-duration-fast: 0.15s;
+  --pg-duration-medium: 0.35s;
+
+  /* —— Legacy aliases (original mirror used --ls-*) —— */
+  --ls-paper: var(--pg-paper);
+  --ls-ink: var(--pg-ink);
+  --ls-red: var(--pg-red);
+  --ls-line: var(--pg-line);
+  --ls-mute: var(--pg-mute);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --pg-paper: var(--pg-neutral-950);
+  --pg-paper-elevated: var(--pg-neutral-900);
+  --pg-ink: var(--pg-neutral-100);
+  --pg-ink-soft: var(--pg-neutral-200);
+  --pg-line: var(--pg-neutral-800);
+  --pg-line-strong: var(--pg-neutral-700);
+  --pg-mute: var(--pg-neutral-500);
+  --pg-body: var(--pg-neutral-300);
+  --pg-body-soft: var(--pg-neutral-400);
+
+  --pg-surface: var(--pg-neutral-950);
+  --pg-surface-elevated: var(--pg-neutral-900);
+  --pg-text: var(--pg-neutral-100);
+  --pg-text-secondary: var(--pg-neutral-300);
+  --pg-border: var(--pg-neutral-800);
+
+  --pg-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --pg-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --pg-shadow-3: 0 10px 24px rgba(0, 0, 0, 0.5);
+  --pg-shadow-4: 0 20px 40px rgba(0, 0, 0, 0.55);
+  --pg-shadow-float: 0 32px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --pg-shadow-highlight: 6px 6px 0 var(--pg-neutral-100);
+  --pg-shadow-glow: 0 8px 24px rgba(255, 77, 58, 0.25);
+}
+
+/* Optional utility: skewed highlight chip (hero keywords) */
+.pg-highlight {
+  background: var(--pg-red);
+  color: #fff;
+  padding: 0 0.08em;
+  display: inline-block;
+  transform: skew(-4deg);
+  box-shadow: var(--pg-shadow-highlight);
+}
+
+/* Mono eyebrow label */
+.pg-eyebrow {
+  font-family: var(--pg-font-mono);
+  font-size: var(--pg-text-meta);
+  color: var(--pg-mute);
+  letter-spacing: var(--pg-tracking-meta);
+  text-transform: uppercase;
+}

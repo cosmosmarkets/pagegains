@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PageGains — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/brand_assets/tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--pg-font-display);
+      font-size: var(--pg-text-body);
+      line-height: var(--pg-leading-body);
+      color: var(--pg-text);
+      background: var(--pg-surface);
+    }
+    .ds-grain {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+    }
+    [data-theme="dark"] .ds-grain { mix-blend-mode: overlay; opacity: 0.04; }
+
+    .ds-shell {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      max-width: calc(var(--pg-max-width) + 220px + var(--pg-gutter) * 2);
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+    @media (max-width: 900px) {
+      .ds-shell { grid-template-columns: 1fr; }
+      .ds-nav { position: static !important; border-right: none !important; border-bottom: 1px solid var(--pg-border); }
+    }
+
+    .ds-nav {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      padding: var(--pg-space-6) var(--pg-space-5);
+      border-right: 1px solid var(--pg-border);
+      background: var(--pg-surface-elevated);
+    }
+    @media (max-width: 900px) { .ds-nav { height: auto; } }
+    .ds-nav ul { list-style: none; margin: var(--pg-space-4) 0 0; padding: 0; }
+    .ds-nav a {
+      display: block;
+      padding: var(--pg-space-2) 0;
+      color: var(--pg-mute);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color var(--pg-duration-fast) var(--pg-ease-default);
+    }
+    .ds-nav a:hover { color: var(--pg-text); }
+    .ds-nav a:focus-visible {
+      outline: 2px solid var(--pg-red-500);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .ds-main { padding: var(--pg-space-10) var(--pg-gutter); min-width: 0; }
+    @media (max-width: 640px) { .ds-main { padding: var(--pg-section-y-sm) var(--pg-gutter-sm); } }
+
+    .ds-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--pg-space-3);
+      margin-bottom: var(--pg-space-8);
+    }
+    .ds-theme-btn {
+      font-family: var(--pg-font-mono);
+      font-size: var(--pg-text-meta-lg);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: var(--pg-space-2) var(--pg-space-4);
+      border: 1px solid var(--pg-border);
+      border-radius: var(--pg-radius-sm);
+      background: var(--pg-surface-elevated);
+      color: var(--pg-text);
+      cursor: pointer;
+      transition: background var(--pg-duration-fast) var(--pg-ease-default), border-color var(--pg-duration-fast) var(--pg-ease-default);
+    }
+    .ds-theme-btn:hover { border-color: var(--pg-mute); }
+    .ds-theme-btn:focus-visible {
+      outline: 2px solid var(--pg-red-500);
+      outline-offset: 2px;
+    }
+
+    section { margin-bottom: var(--pg-space-20); scroll-margin-top: var(--pg-space-6); }
+    .ds-section-title {
+      font-size: var(--pg-text-h3);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 var(--pg-space-2);
+    }
+    .ds-section-desc { color: var(--pg-mute); margin: 0 0 var(--pg-space-8); max-width: 56ch; }
+
+    .ds-cover {
+      position: relative;
+      padding: var(--pg-space-12) 0;
+      border-bottom: 1px solid var(--pg-border);
+      margin-bottom: var(--pg-space-16);
+    }
+    .ds-cover img { height: 36px; width: auto; display: block; margin-bottom: var(--pg-space-6); }
+
+    .ds-scale { display: flex; flex-wrap: wrap; gap: 2px; margin-bottom: var(--pg-space-8); }
+    .ds-swatch {
+      flex: 1 1 52px;
+      min-width: 48px;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      background: transparent;
+      text-align: left;
+      border-radius: 4px;
+    }
+    .ds-swatch:focus-visible { outline: 2px solid var(--pg-red-500); outline-offset: 2px; }
+    .ds-swatch-chip {
+      height: 48px;
+      border-radius: 6px;
+      border: 1px solid rgba(11, 11, 12, 0.06);
+    }
+    .ds-swatch-meta {
+      font-family: var(--pg-font-mono);
+      font-size: 9px;
+      color: var(--pg-mute);
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+    .ds-swatch-meta code { display: block; font-size: 8px; opacity: 0.85; }
+
+    .ds-semantic-row { display: flex; flex-wrap: wrap; gap: var(--pg-space-4); }
+    .ds-semantic-item { flex: 1 1 140px; }
+
+    .ds-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-bottom: var(--pg-space-8);
+    }
+    .ds-table th, .ds-table td {
+      text-align: left;
+      padding: var(--pg-space-3) var(--pg-space-4);
+      border-bottom: 1px solid var(--pg-border);
+    }
+    .ds-table th { font-family: var(--pg-font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--pg-mute); font-weight: 500; }
+    .ds-table code { font-family: var(--pg-font-mono); font-size: 12px; }
+
+    .ds-specimen { margin-bottom: var(--pg-space-6); padding-bottom: var(--pg-space-6); border-bottom: 1px solid var(--pg-border); }
+    .ds-display { font-size: clamp(48px, 8vw, 96px); font-weight: 800; line-height: 0.88; letter-spacing: -0.025em; margin: 0; }
+    .ds-h1 { font-size: 72px; font-weight: 700; line-height: 0.92; letter-spacing: -0.02em; margin: 0; }
+    .ds-h2 { font-size: var(--pg-text-h2); font-weight: 700; line-height: 0.92; letter-spacing: var(--pg-tracking-h2); margin: 0; }
+    .ds-h3 { font-size: 36px; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; margin: 0; }
+    .ds-h4 { font-size: 24px; font-weight: 600; line-height: 1.2; margin: 0; }
+    .ds-lead { font-size: var(--pg-text-lead); line-height: var(--pg-leading-lead); margin: 0; }
+    .ds-body { font-size: var(--pg-text-body); margin: 0; }
+    .ds-small { font-size: 14px; line-height: 1.4; margin: 0; }
+    .ds-caption { font-size: 12px; font-weight: 500; line-height: 1.4; margin: 0; }
+    .ds-accent { font-family: var(--pg-font-accent); font-style: italic; font-weight: 400; }
+
+    .ds-ruler-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--pg-space-3); margin-bottom: var(--pg-space-4); }
+    .ds-ruler-block {
+      background: var(--pg-red-500);
+      opacity: 0.85;
+      border-radius: 2px;
+    }
+
+    .ds-shadow-grid, .ds-radius-grid { display: flex; flex-wrap: wrap; gap: var(--pg-space-6); }
+    .ds-shadow-card, .ds-radius-card {
+      width: 140px;
+      height: 88px;
+      background: var(--pg-surface-elevated);
+      border-radius: var(--pg-radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--pg-font-mono);
+      font-size: 11px;
+      color: var(--pg-mute);
+    }
+
+    .ds-blur-nav {
+      padding: var(--pg-space-4) var(--pg-space-6);
+      background: color-mix(in srgb, var(--pg-paper) 85%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--pg-border);
+      border-radius: var(--pg-radius-md);
+      font-family: var(--pg-font-mono);
+      font-size: 12px;
+    }
+
+    .ds-motion-row { display: flex; flex-wrap: wrap; gap: var(--pg-space-4); }
+    .ds-motion-btn {
+      padding: var(--pg-space-4) var(--pg-space-6);
+      border: none;
+      border-radius: var(--pg-radius-md);
+      background: var(--pg-ink);
+      color: var(--pg-paper);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform var(--pg-duration-200) var(--pg-ease-default), opacity var(--pg-duration-200) var(--pg-ease-default);
+    }
+    .ds-motion-btn:hover { transform: translateY(-2px); opacity: 0.92; }
+    .ds-motion-btn:active { transform: translateY(0); }
+    .ds-motion-btn:focus-visible { outline: 2px solid var(--pg-red-500); outline-offset: 3px; }
+
+    .ds-component-block { margin-bottom: var(--pg-space-10); }
+    .ds-component-block h3 { font-size: 18px; margin: 0 0 var(--pg-space-4); font-weight: 600; }
+    .ds-state-row { display: flex; flex-wrap: wrap; gap: var(--pg-space-4); align-items: center; margin-bottom: var(--pg-space-4); }
+    .ds-state-label { font-family: var(--pg-font-mono); font-size: 10px; color: var(--pg-mute); width: 100%; margin-bottom: -8px; }
+
+    .pg-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--pg-ink);
+      color: #fff;
+      padding: 22px 34px;
+      border: 0;
+      border-radius: var(--pg-radius-md);
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      box-shadow: var(--pg-shadow-cta);
+      transition: transform var(--pg-duration-fast) var(--pg-ease-default), box-shadow var(--pg-duration-fast) var(--pg-ease-default);
+    }
+    .pg-btn-primary:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0 var(--pg-red); }
+    .pg-btn-primary:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--pg-red); }
+    .pg-btn-primary:focus-visible { outline: 2px solid var(--pg-red-500); outline-offset: 3px; }
+    .pg-btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: var(--pg-shadow-cta); }
+
+    .ds-state-matrix {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--pg-space-6);
+      align-items: flex-end;
+    }
+    .ds-state-cell { display: flex; flex-direction: column; gap: var(--pg-space-2); }
+    .ds-state-cell .pg-btn-primary { pointer-events: none; }
+    .pg-btn-primary.ds-state-hover {
+      transform: translate(2px, 2px);
+      box-shadow: 4px 4px 0 var(--pg-red);
+    }
+    .pg-btn-primary.ds-state-active {
+      transform: translate(4px, 4px);
+      box-shadow: 2px 2px 0 var(--pg-red);
+    }
+    .pg-btn-primary.ds-state-focus {
+      outline: 2px solid var(--pg-red-500);
+      outline-offset: 3px;
+    }
+
+    .pg-cmd-bar {
+      max-width: 560px;
+      background: var(--pg-ink);
+      border-radius: var(--pg-radius-xl);
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--pg-shadow-cmd);
+    }
+    .pg-cmd-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
+      background: var(--pg-ink-soft);
+      border-radius: var(--pg-radius-sm);
+      font-family: var(--pg-font-mono);
+      font-size: 14px;
+      color: #d4d4d8;
+    }
+    .pg-cmd-input-wrap span { color: #8a8a90; font-size: 12px; }
+    .pg-cmd-input {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: inherit;
+      font: inherit;
+    }
+    .pg-cmd-input:focus-visible { outline: none; }
+    .pg-cmd-submit {
+      background: var(--pg-red);
+      color: #fff;
+      padding: 16px 22px;
+      border: 0;
+      border-radius: var(--pg-radius-sm);
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background var(--pg-duration-fast) var(--pg-ease-default), transform var(--pg-duration-fast) var(--pg-ease-default);
+    }
+    .pg-cmd-submit:hover { background: var(--pg-red-hover); }
+    .pg-cmd-submit:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .pg-cmd-submit:active { transform: scale(0.98); }
+    .pg-cmd-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .pg-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--pg-font-mono);
+      font-size: var(--pg-text-meta-lg);
+      color: var(--pg-mute);
+    }
+    .pg-live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pg-crimson);
+      animation: pg-blink 1.4s infinite;
+    }
+    @keyframes pg-blink { 50% { opacity: 0.3; } }
+    @media (prefers-reduced-motion: reduce) {
+      .pg-live-dot { animation: none; }
+      .pg-btn-primary:hover, .pg-btn-primary:active { transform: none; }
+      .ds-motion-btn:hover { transform: none; }
+    }
+
+    .pg-hiw-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--pg-line);
+      border: 1px solid var(--pg-line);
+      border-radius: var(--pg-radius-lg);
+      overflow: hidden;
+      max-width: 720px;
+    }
+    @media (max-width: 640px) { .pg-hiw-grid { grid-template-columns: 1fr; } }
+    .pg-hiw-cell {
+      background: var(--pg-paper);
+      padding: 28px 24px;
+      min-height: 160px;
+    }
+    .pg-hiw-cell h4 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
+    .pg-hiw-cell p { margin: 0; color: var(--pg-body-soft); font-size: 14px; line-height: 1.5; }
+
+    .pg-pricing {
+      background: var(--pg-ink);
+      color: #fff;
+      border-radius: var(--pg-radius-xl);
+      padding: 48px 40px;
+      max-width: 640px;
+    }
+    .pg-pricing h4 { font-size: clamp(32px, 4vw, 48px); line-height: 0.92; letter-spacing: var(--pg-tracking-h2); margin: 0 0 20px; font-weight: 700; }
+    .pg-pricing ul { list-style: none; padding: 0; margin: 0; font-size: 16px; color: #ccc; }
+    .pg-pricing li {
+      padding: 10px 0;
+      border-top: 1px solid var(--pg-neutral-800);
+      display: flex;
+      gap: 10px;
+    }
+    .pg-pricing li span { color: var(--pg-red); flex-shrink: 0; }
+    .pg-price-tag { font-size: 56px; font-weight: 800; color: var(--pg-red); letter-spacing: -0.04em; line-height: 1; margin-top: 16px; }
+
+    .ds-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      opacity: 0;
+      padding: 10px 18px;
+      background: var(--pg-ink);
+      color: var(--pg-paper);
+      font-family: var(--pg-font-mono);
+      font-size: 12px;
+      border-radius: var(--pg-radius-pill);
+      pointer-events: none;
+      transition: transform var(--pg-duration-300) var(--pg-ease-enter), opacity var(--pg-duration-300) var(--pg-ease-enter);
+      z-index: 10000;
+    }
+    .ds-toast.is-visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .ds-footnote {
+      font-size: 13px;
+      color: var(--pg-mute);
+      margin-top: var(--pg-space-8);
+      padding-top: var(--pg-space-6);
+      border-top: 1px solid var(--pg-border);
+    }
+  </style>
+  <script>
+    (function initTheme() {
+      const key = 'pg-ds-theme';
+      const stored = localStorage.getItem(key);
+      if (stored === 'light' || stored === 'dark') {
+        document.documentElement.setAttribute('data-theme', stored === 'dark' ? 'dark' : '');
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="ds-grain" aria-hidden="true"></div>
+  <div class="ds-shell">
+    <nav class="ds-nav" aria-label="Design system sections">
+      <img src="/original/pagegains-logo-new.png" alt="PageGains" width="120" height="28" style="height:28px;width:auto" onerror="this.style.display='none'" />
+      <p class="pg-eyebrow" style="margin-top:12px">Design system</p>
+      <ul>
+        <li><a href="#cover">Cover</a></li>
+        <li><a href="#color">Color</a></li>
+        <li><a href="#typography">Typography</a></li>
+        <li><a href="#spacing">Spacing</a></li>
+        <li><a href="#shadows">Shadows</a></li>
+        <li><a href="#effects">Effects</a></li>
+        <li><a href="#motion">Motion</a></li>
+        <li><a href="#components">Components</a></li>
+      </ul>
+    </nav>
+
+    <main class="ds-main">
+      <div class="ds-topbar">
+        <button type="button" class="ds-theme-btn" id="theme-toggle" aria-pressed="false">Theme: Light</button>
+      </div>
+
+      <header class="ds-cover" id="cover">
+        <img src="/original/pagegains-logo-new.png" alt="PageGains" />
+        <p class="pg-eyebrow">Design system · v1.0 · locked tokens</p>
+        <h1 class="ds-h2" style="margin-top:16px;max-width:14ch">PageGains visual language</h1>
+        <p class="ds-lead" style="margin-top:16px;color:var(--pg-body)">Editorial paper × audit terminal. Coral for brand; crimson for urgency only.</p>
+      </header>
+
+      <section id="color">
+        <h2 class="ds-section-title">Color</h2>
+        <p class="ds-section-desc">Click a swatch to copy hex; click the variable name to copy <code>var(--pg-*)</code>.</p>
+
+        <h3 class="ds-h4">Primary — Coral</h3>
+        <div class="ds-scale" data-scale="red"></div>
+
+        <h3 class="ds-h4" style="margin-top:32px">Secondary — Crimson (urgency)</h3>
+        <div class="ds-scale" data-scale="crimson"></div>
+
+        <h3 class="ds-h4" style="margin-top:32px">Neutral — Warm editorial</h3>
+        <div class="ds-scale" data-scale="neutral"></div>
+
+        <h3 class="ds-h4" style="margin-top:32px">Semantic (compact)</h3>
+        <div class="ds-semantic-row" data-semantic></div>
+      </section>
+
+      <section id="typography">
+        <h2 class="ds-section-title">Typography</h2>
+        <p class="ds-section-desc">Kimi reference scale vs production (locked) from tokens.css.</p>
+        <table class="ds-table">
+          <thead>
+            <tr><th>Role</th><th>Kimi reference</th><th>Production (locked)</th><th>Token</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Display</td><td>96px / 88% / 800</td><td><code>clamp(44px, 9vw, 110px)</code></td><td><code>--pg-text-hero</code></td></tr>
+            <tr><td>H1</td><td>72px / 92% / 700</td><td>—</td><td>—</td></tr>
+            <tr><td>H2</td><td>48px / 92% / 700</td><td><code>clamp(42px, 5.4vw, 78px)</code></td><td><code>--pg-text-h2</code></td></tr>
+            <tr><td>H3</td><td>36px / 110% / 600</td><td>28px</td><td><code>--pg-text-h3</code></td></tr>
+            <tr><td>H4</td><td>24px / 120% / 600</td><td>—</td><td>—</td></tr>
+            <tr><td>Body large</td><td>20px / 150%</td><td>22px lead</td><td><code>--pg-text-lead</code></td></tr>
+            <tr><td>Body</td><td>16px / 150%</td><td>15px</td><td><code>--pg-text-body</code></td></tr>
+            <tr><td>Small</td><td>14px / 140%</td><td>—</td><td>—</td></tr>
+            <tr><td>Caption / meta</td><td>12px / 140% / 500</td><td>11px mono uppercase</td><td><code>--pg-text-meta</code></td></tr>
+          </tbody>
+        </table>
+
+        <div class="ds-specimen"><p class="pg-eyebrow">Display specimen</p><p class="ds-display">Your pricing page is <span class="pg-highlight">losing</span> trials</p></div>
+        <div class="ds-specimen"><p class="pg-eyebrow">H2 + accent</p><p class="ds-h2">Three clicks. A brutal, honest report. <em class="ds-accent">right now.</em></p></div>
+        <div class="ds-specimen"><p class="pg-eyebrow">Lead</p><p class="ds-lead">Paste a URL. Get <strong>10–20 ranked conversion issues</strong> in ~60 seconds. <em class="ds-accent">$3.99.</em></p></div>
+        <div class="ds-specimen"><p class="pg-eyebrow">Body</p><p class="ds-body">Agency-grade audit in ~60 seconds. No subscription. No calls.</p></div>
+        <div class="ds-specimen"><p class="pg-eyebrow">Eyebrow</p><p class="pg-eyebrow"><span style="display:inline-block;width:18px;height:1px;background:var(--pg-ink);vertical-align:middle;margin-right:10px"></span>How it works · 3 steps</p></div>
+      </section>
+
+      <section id="spacing">
+        <h2 class="ds-section-title">Spacing</h2>
+        <p class="ds-section-desc">4px base unit. Section padding: <code>100px 40px</code> desktop · <code>60px 20px</code> mobile.</p>
+        <div id="spacing-rulers"></div>
+      </section>
+
+      <section id="shadows">
+        <h2 class="ds-section-title">Shadows &amp; radius</h2>
+        <div class="ds-shadow-grid">
+          <div class="ds-shadow-card" style="box-shadow:var(--pg-shadow-1)">Level 1</div>
+          <div class="ds-shadow-card" style="box-shadow:var(--pg-shadow-2)">Level 2</div>
+          <div class="ds-shadow-card" style="box-shadow:var(--pg-shadow-3)">Level 3</div>
+          <div class="ds-shadow-card" style="box-shadow:var(--pg-shadow-4)">Level 4</div>
+          <div class="ds-shadow-card" style="box-shadow:var(--pg-shadow-cta)">CTA offset</div>
+          <div class="ds-shadow-card" style="box-shadow:var(--pg-shadow-cmd)">Cmd bar</div>
+        </div>
+        <div class="ds-radius-grid" style="margin-top:32px">
+          <div class="ds-radius-card" style="border-radius:var(--pg-radius-sm)">10px input</div>
+          <div class="ds-radius-card" style="border-radius:var(--pg-radius-md)">12px btn</div>
+          <div class="ds-radius-card" style="border-radius:var(--pg-radius-lg)">14px card</div>
+          <div class="ds-radius-card" style="border-radius:var(--pg-radius-xl)">18px panel</div>
+          <div class="ds-radius-card" style="border-radius:var(--pg-radius-pill)">pill</div>
+        </div>
+      </section>
+
+      <section id="effects">
+        <h2 class="ds-section-title">Effects</h2>
+        <p class="ds-section-desc">Grain overlay at 3% (fixed on this page). Backdrop blur for sticky nav pattern.</p>
+        <div class="ds-blur-nav">Sticky nav · backdrop-filter: blur(12px)</div>
+      </section>
+
+      <section id="motion">
+        <h2 class="ds-section-title">Motion</h2>
+        <p class="ds-section-desc">Animate <code>transform</code> and <code>opacity</code> only. Spring easing for hero moments.</p>
+        <div class="ds-motion-row">
+          <button type="button" class="ds-motion-btn" data-ease="default">Default ease</button>
+          <button type="button" class="ds-motion-btn" data-ease="spring">Spring ease</button>
+          <button type="button" class="ds-motion-btn" data-ease="bounce">Bounce ease</button>
+        </div>
+      </section>
+
+      <section id="components">
+        <h2 class="ds-section-title">Components</h2>
+        <p class="ds-section-desc">Signature patterns from the locked brand. PageGains-facing copy only.</p>
+
+        <div class="ds-component-block">
+          <h3>Primary CTA</h3>
+          <div class="ds-state-matrix">
+            <div class="ds-state-cell">
+              <span class="ds-state-label">Default</span>
+              <button type="button" class="pg-btn-primary" tabindex="-1">Start for free →</button>
+            </div>
+            <div class="ds-state-cell">
+              <span class="ds-state-label">Hover</span>
+              <button type="button" class="pg-btn-primary ds-state-hover" tabindex="-1">Start for free →</button>
+            </div>
+            <div class="ds-state-cell">
+              <span class="ds-state-label">Focus-visible</span>
+              <button type="button" class="pg-btn-primary ds-state-focus" tabindex="-1">Start for free →</button>
+            </div>
+            <div class="ds-state-cell">
+              <span class="ds-state-label">Active</span>
+              <button type="button" class="pg-btn-primary ds-state-active" tabindex="-1">Start for free →</button>
+            </div>
+            <div class="ds-state-cell">
+              <span class="ds-state-label">Disabled</span>
+              <button type="button" class="pg-btn-primary" disabled>Start for free →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ds-component-block">
+          <h3>Skew highlight</h3>
+          <p class="ds-h2">Your landing page is <span class="pg-highlight">bleeding</span> signups.</p>
+        </div>
+
+        <div class="ds-component-block">
+          <h3>Eyebrow</h3>
+          <p class="pg-eyebrow"><span style="display:inline-block;width:18px;height:1px;background:var(--pg-ink);vertical-align:middle;margin-right:10px"></span>Sample output · real page</p>
+        </div>
+
+        <div class="ds-component-block">
+          <h3>URL command bar</h3>
+          <form class="pg-cmd-bar" onsubmit="return false">
+            <div class="pg-cmd-input-wrap">
+              <span>https://</span>
+              <input class="pg-cmd-input" type="text" placeholder="yoursite.com/pricing" aria-label="Page URL" />
+            </div>
+            <button type="submit" class="pg-cmd-submit">Start for free</button>
+          </form>
+          <form class="pg-cmd-bar" style="margin-top:16px;opacity:0.7" onsubmit="return false">
+            <div class="pg-cmd-input-wrap">
+              <span>https://</span>
+              <input class="pg-cmd-input" type="text" disabled value="yoursite.com/pricing" />
+            </div>
+            <button type="submit" class="pg-cmd-submit" disabled>Start for free</button>
+          </form>
+        </div>
+
+        <div class="ds-component-block">
+          <h3>Live urgency</h3>
+          <p class="pg-live"><span class="pg-live-dot" aria-hidden="true"></span> Audits running now</p>
+        </div>
+
+        <div class="ds-component-block">
+          <h3>3-step grid</h3>
+          <div class="pg-hiw-grid">
+            <div class="pg-hiw-cell"><p class="pg-eyebrow" style="margin-bottom:24px">01 / paste</p><h4>Drop in any URL</h4><p>Landing, product, pricing, checkout.</p></div>
+            <div class="pg-hiw-cell"><p class="pg-eyebrow" style="margin-bottom:24px">02 / analyze</p><h4>AI scans 120 signals</h4><p>Clarity, friction, trust, hierarchy.</p></div>
+            <div class="pg-hiw-cell"><p class="pg-eyebrow" style="margin-bottom:24px">03 / fix</p><h4>Ranked fixes, not fluff</h4><p>Exact rewrites and predicted lift.</p></div>
+          </div>
+        </div>
+
+        <div class="ds-component-block">
+          <h3>Pricing panel</h3>
+          <div class="pg-pricing">
+            <p class="pg-eyebrow" style="color:#888;margin-bottom:8px">Pricing · one price</p>
+            <h4>No subscription.<br />No calls. No plans.</h4>
+            <ul>
+              <li><span>→</span> Full conversion audit of one page</li>
+              <li><span>→</span> Ranked list of 10–20 issues</li>
+              <li><span>→</span> Results in under 60 seconds</li>
+            </ul>
+            <p class="pg-price-tag">$3.99</p>
+          </div>
+        </div>
+
+        <p class="ds-footnote"><strong>In-app naming:</strong> GainBot is the AI inside the product — use in report UI and chat, not as the public brand face.</p>
+      </section>
+    </main>
+  </div>
+
+  <div class="ds-toast" id="copy-toast" role="status" aria-live="polite">Copied</div>
+
+  <script>
+    const SCALES = {
+      red: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950],
+      crimson: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950],
+      neutral: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950],
+    };
+    const SEMANTIC = [
+      { name: 'success', steps: [50, 500, 950] },
+      { name: 'warning', steps: [50, 500, 950] },
+      { name: 'error', steps: [50, 500, 950] },
+      { name: 'info', steps: [50, 500, 950] },
+    ];
+
+    const toast = document.getElementById('copy-toast');
+    let toastTimer;
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('is-visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 1600);
+    }
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('Copied: ' + text);
+      } catch {
+        showToast('Copy failed');
+      }
+    }
+
+    function buildScale(container) {
+      const key = container.dataset.scale;
+      const steps = SCALES[key];
+      steps.forEach((step) => {
+        const varName = `--pg-${key}-${step}`;
+        const hex = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ds-swatch';
+        btn.innerHTML = `<div class="ds-swatch-chip" style="background:var(${varName})"></div><div class="ds-swatch-meta">${step}<code>${varName}</code><span>${hex}</span></div>`;
+        btn.addEventListener('click', (e) => {
+          if (e.target.closest('code')) copyText(varName);
+          else copyText(hex);
+        });
+        container.appendChild(btn);
+      });
+    }
+    document.querySelectorAll('[data-scale]').forEach((el) => buildScale(el));
+
+    const semRow = document.querySelector('[data-semantic]');
+    SEMANTIC.forEach(({ name, steps }) => {
+      steps.forEach((step) => {
+        const varName = `--pg-${name}-${step}`;
+        const hex = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        const wrap = document.createElement('div');
+        wrap.className = 'ds-semantic-item';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ds-swatch';
+        btn.style.width = '100%';
+        btn.innerHTML = `<div class="ds-swatch-chip" style="background:var(${varName});height:56px"></div><div class="ds-swatch-meta">${name} ${step}<code>${varName}</code><span>${hex}</span></div>`;
+        btn.addEventListener('click', (e) => {
+          if (e.target.closest('code')) copyText(varName);
+          else copyText(hex);
+        });
+        wrap.appendChild(btn);
+        semRow.appendChild(wrap);
+      });
+    });
+
+    const spaceSteps = [0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24];
+    const rulers = document.getElementById('spacing-rulers');
+    spaceSteps.forEach((n) => {
+      const px = n === 0 ? 0 : n * 4;
+      const row = document.createElement('div');
+      row.className = 'ds-ruler-row';
+      row.innerHTML = `<span style="font-family:var(--pg-font-mono);font-size:11px;width:80px">--pg-space-${n}</span><div class="ds-ruler-block" style="width:${Math.max(px, 2)}px;height:16px"></div><span style="font-size:12px;color:var(--pg-mute)">${px}px</span>`;
+      rulers.appendChild(row);
+    });
+
+    const themeBtn = document.getElementById('theme-toggle');
+    function syncThemeBtn() {
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      themeBtn.textContent = dark ? 'Theme: Dark' : 'Theme: Light';
+      themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    }
+    themeBtn.addEventListener('click', () => {
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (dark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('pg-ds-theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('pg-ds-theme', 'dark');
+      }
+      syncThemeBtn();
+    });
+    syncThemeBtn();
+
+    document.querySelectorAll('.ds-motion-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const ease = btn.dataset.ease;
+        const map = { default: 'var(--pg-ease-default)', spring: 'var(--pg-ease-spring)', bounce: 'var(--pg-ease-bounce)' };
+        btn.style.transition = `transform 400ms ${map[ease] || map.default}`;
+        btn.style.transform = 'scale(1.08)';
+        setTimeout(() => { btn.style.transform = ''; }, 400);
+      });
+    });
+  </script>
+</body>
+</html>
