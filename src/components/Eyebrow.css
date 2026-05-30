@@ -1,0 +1,9 @@
+.eyebrow {
+  display: block;
+  font-family: var(--pg-font-mono);
+  font-size: var(--pg-text-meta);
+  color: var(--pg-mute);
+  letter-spacing: var(--pg-tracking-meta);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}

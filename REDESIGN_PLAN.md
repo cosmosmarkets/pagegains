@@ -200,6 +200,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 )
 ```
 
+> **Note:** the shipped `src/main.jsx` is intentionally richer than this snippet and is the source of
+> truth — it adds `document.fonts.ready` + `window load` → `ScrollTrigger.refresh()` (Q3), a
+> reduced-motion teardown of Lenis (Q1/motion rules), and exposes `window.__lenis` for the marquee
+> velocity coupling (Q8). Do not regress it back to this minimal version.
+
 ## `App.jsx`
 
 ```jsx
@@ -432,6 +437,19 @@ export default function URLBar({ id }) {
 .url-bar__btn:hover { background: var(--pg-red); }
 ```
 
+**Dark-section override (Q4 — REQUIRED).** URLBar is a light "card" that floats in BOTH the light
+Hero and the dark FinalCTA. In `[data-theme="dark"]`, `var(--pg-ink)` resolves to near-white, which
+would turn the input text white-on-white and the submit button near-white with white text. Re-pin the
+ink-coloured parts to a **literal** dark neutral so the bar renders identically in both themes:
+
+```css
+[data-theme="dark"] .url-bar { background: #fff; }
+[data-theme="dark"] .url-bar__input { color: var(--pg-neutral-950); }
+[data-theme="dark"] .url-bar__btn  { background: var(--pg-neutral-950); color: #fff; }
+[data-theme="dark"] .url-bar__btn:hover { background: var(--pg-red); }
+/* border + 10px red shadow already read correctly on dark — leave them. */
+```
+
 **Verify:** Grain is subtle but visible. Fonts render correctly. URLBar and CTAButton hard shadows look right at a glance.
 
 ---
@@ -547,15 +565,18 @@ Rotating values: `pricing page` / `landing page` / `homepage` / `signup flow`
 
 Implement with **CSS @keyframes only — no JavaScript text-scramble libraries.**
 
+**Width stability (Q6).** Do NOT hardcode `min-width` — it can't track the `clamp()` font-size across
+viewports. Use a **single-cell grid stack**: the container is `inline-grid` and every word occupies the
+same cell via `grid-area: 1 / 1`. The grid track auto-sizes to the widest word at every font-size, all
+four words overlap, and each animates `opacity`/`transform` only. Fully CSS-only, zero magic numbers.
+
 ```css
 .rotating-word {
-  position: relative;
-  display: inline-block;
-  /* Set min-width to widest value to prevent layout shift */
+  display: inline-grid;       /* track auto-sizes to widest word */
+  vertical-align: baseline;   /* tune so the stack sits on the headline baseline */
 }
 .rotating-word span {
-  position: absolute;
-  left: 0; top: 0;
+  grid-area: 1 / 1;           /* all words share one cell — no collapse, no absolute positioning */
   opacity: 0;
   animation: wordCycle 12s linear infinite;
 }
@@ -687,16 +708,25 @@ export default function Marquee() {
 }
 ```
 
-Wire scroll velocity to marquee speed (in `main.jsx` after Lenis init):
+Wire scroll velocity to marquee speed (Q8). Source it off the already-exposed `window.__lenis` (do
+NOT re-instantiate Lenis or open a competing listener), **clamp** the multiplier so fast scrolls don't
+spike, smooth toward the target, and decay back to base when idle. Guard on reduced-motion.
 
 ```js
-lenis.on('scroll', ({ velocity }) => {
-  const track = document.querySelector('.marquee-track')
-  if (track) {
-    const speed = Math.max(0.5, 1 + Math.abs(velocity) * 0.3)
-    track.style.animationDuration = `${35 / speed}s`
-  }
-})
+// In Marquee.jsx useEffect (gsap.context-free; raw rAF loop), or wired in Stage 9.
+const lenis = window.__lenis
+const track = trackRef.current
+if (lenis && track && !prefersReducedMotion) {
+  let target = 1, current = 1
+  lenis.on('scroll', ({ velocity }) => {
+    target = Math.min(3, 1 + Math.abs(velocity) * 0.2)   // clamp top end
+  })
+  gsap.ticker.add(() => {
+    target += (1 - target) * 0.05                          // decay toward base when idle
+    current += (target - current) * 0.1                    // smooth applied value
+    track.style.animationDuration = `${35 / current}s`
+  })
+}
 ```
 
 ## How It Works
@@ -760,7 +790,12 @@ gsap.from(cardEls, {
 - **H2:** `This is what` **`$3.99`** `actually buys you.` — "$3.99" in `<HighlightChip>`
 - **Image:** `audit-result-screenshot.webp`, `max-width: 1100px`, centered, `margin-top: 48px`, `loading="lazy"`
 
+**Perspective ownership (Q7).** GSAP rewrites the `transform` property and would drop a CSS
+`perspective(...)` set on the same element. Put perspective on a **wrapper** and animate `rotateX` on
+the inner image only:
+
 ```css
+.sample-wrap { perspective: 1200px; }        /* wrapper owns depth; GSAP never touches it */
 .sample-screenshot {
   width: 100%;
   max-width: 1100px;
@@ -768,7 +803,7 @@ gsap.from(cardEls, {
   border-radius: var(--pg-radius-md);
   border: 1px solid var(--pg-line);
   box-shadow: var(--pg-shadow-float);
-  transform: perspective(1200px) rotateX(8deg);
+  transform: rotateX(8deg);                   /* GSAP animates this to 0 (scrub) */
   will-change: transform;
   backface-visibility: hidden;
 }
@@ -1084,24 +1119,35 @@ gsap.from(cardEls, {
 
 ## Pricing counter — `$0.00` → `$3.99`
 
+Render the price node with its **final** value as static JSX text so non-JS, reduced-motion, and
+re-render states always show the correct figure; drive the count-up imperatively via the ref (Q13).
+The ref must point to the DOM `<span>`, not a component. Because the JSX text already equals the final
+value, a parent re-render won't visually reset it.
+
+```jsx
+<span className="pricing-price" ref={priceRef}>$3.99</span>   {/* static final value */}
+```
+
 ```js
-const counter = { val: 0 }
-ScrollTrigger.create({
-  trigger: priceRef.current,
-  start: 'top 80%',
-  once: true,
-  onEnter: () => {
-    gsap.to(counter, {
-      val: 3.99,
-      duration: 1.2,
-      ease: 'power2.out',
-      snap: { val: 0.01 },
-      onUpdate: () => {
-        priceRef.current.textContent = '$' + counter.val.toFixed(2)
-      }
-    })
-  }
-})
+if (prefersReducedMotion) {
+  priceRef.current.textContent = '$3.99'          // skip the tween, show final
+} else {
+  const counter = { val: 0 }
+  ScrollTrigger.create({
+    trigger: priceRef.current,
+    start: 'top 80%',
+    once: true,
+    onEnter: () => {
+      gsap.to(counter, {
+        val: 3.99,
+        duration: 1.2,
+        ease: 'power2.out',
+        snap: { val: 0.01 },
+        onUpdate: () => { priceRef.current.textContent = '$' + counter.val.toFixed(2) },
+      })
+    },
+  })
+}
 ```
 
 ## Hero screenshot parallax
@@ -1126,6 +1172,17 @@ gsap.to(screenshotRef.current, {
 - `will-change: transform` on all GSAP-animated elements
 - `backface-visibility: hidden` on all 3D transforms
 - All one-shot scroll animations: `once: true`
+- **Every section's GSAP runs inside `gsap.context(fn, scopeRef)` and is reverted in the `useEffect`
+  cleanup (Q1, StrictMode-safe)** — the raw `gsap.from(...)` / `ScrollTrigger.create(...)` snippets
+  below are illustrative; in code each is wrapped:
+  ```js
+  const scope = useRef(null)
+  useEffect(() => {
+    if (prefersReducedMotion) return
+    const ctx = gsap.context(() => { /* tweens + ScrollTrigger here */ }, scope)
+    return () => ctx.revert()
+  }, [])
+  ```
 - Wrap all GSAP in a `prefers-reduced-motion` check:
 
 ```js

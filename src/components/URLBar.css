@@ -1,0 +1,75 @@
+.url-bar {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--pg-ink);
+  border-radius: var(--pg-radius-sm);
+  background: #fff;
+  box-shadow: 10px 10px 0 var(--pg-red);
+  overflow: hidden;
+  transition: box-shadow 150ms var(--pg-ease-default);
+}
+.url-bar:focus-within {
+  box-shadow: 10px 10px 0 var(--pg-ink);
+}
+
+.url-bar__prefix {
+  display: flex;
+  align-items: center;
+  font-family: var(--pg-font-mono);
+  font-size: 14px;
+  color: var(--pg-mute);
+  padding: 0 12px 0 16px;
+  border-right: 1px solid var(--pg-line);
+  white-space: nowrap;
+}
+
+.url-bar__input {
+  flex: 1;
+  min-width: 0; /* allow the input to shrink instead of overflowing the bar */
+  border: none;
+  outline: none;
+  font-family: var(--pg-font-mono);
+  font-size: 14px;
+  padding: 16px 12px;
+  background: transparent;
+  color: var(--pg-ink);
+}
+
+.url-bar__btn {
+  background: var(--pg-ink);
+  color: #fff;
+  border: none;
+  font-family: var(--pg-font-display);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 16px 24px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 150ms var(--pg-ease-default);
+}
+.url-bar__btn:hover {
+  background: var(--pg-red);
+}
+
+/* Dark-section override (Q4): URLBar is a light card that floats in dark
+   sections too. In [data-theme="dark"] var(--pg-ink) resolves near-white, which
+   would make the input text white-on-white and the button near-white. Re-pin the
+   ink-coloured parts to a literal dark neutral so the bar looks identical in both
+   Hero (light) and FinalCTA (dark). Border + red shadow already read on dark. */
+[data-theme='dark'] .url-bar {
+  background: #fff;
+}
+[data-theme='dark'] .url-bar__prefix {
+  color: var(--pg-neutral-600);
+  border-right-color: var(--pg-neutral-300);
+}
+[data-theme='dark'] .url-bar__input {
+  color: var(--pg-neutral-950);
+}
+[data-theme='dark'] .url-bar__btn {
+  background: var(--pg-neutral-950);
+  color: #fff;
+}
+[data-theme='dark'] .url-bar__btn:hover {
+  background: var(--pg-red);
+}

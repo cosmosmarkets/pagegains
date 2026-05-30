@@ -1,0 +1,11 @@
+.highlight-chip {
+  display: inline-block;
+  background: var(--pg-red);
+  color: #fff;
+  padding: 0 0.12em;
+  /* small right margin so the skew lean doesn't kiss the next word (Q5) */
+  margin-right: 0.1em;
+  transform: skew(-4deg);
+  box-shadow: var(--pg-shadow-highlight); /* 6px 6px 0 ink — inverts cleanly in dark */
+  font-style: normal;
+}

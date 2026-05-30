@@ -1,0 +1,48 @@
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--pg-font-display);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1;
+  border-radius: var(--pg-radius-sm);
+  padding: 14px 28px;
+  cursor: pointer;
+  /* explicit properties only — never transition-all */
+  transition: transform 150ms var(--pg-ease-default),
+    box-shadow 150ms var(--pg-ease-default);
+  will-change: transform;
+}
+
+.cta-btn--red {
+  background: var(--pg-red);
+  color: #fff;
+  box-shadow: 6px 6px 0 var(--pg-ink);
+}
+.cta-btn--ink {
+  background: var(--pg-ink);
+  color: #fff;
+  box-shadow: 6px 6px 0 var(--pg-red);
+}
+
+.cta-btn--small {
+  padding: 10px 20px;
+  font-size: 13px;
+}
+
+.cta-btn:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0 var(--pg-ink);
+}
+.cta-btn--ink:hover {
+  box-shadow: 3px 3px 0 var(--pg-red);
+}
+.cta-btn:active {
+  transform: translate(6px, 6px);
+  box-shadow: 0 0 0 var(--pg-ink);
+}
+.cta-btn:focus-visible {
+  outline: 2px solid var(--pg-ink);
+  outline-offset: 3px;
+}
