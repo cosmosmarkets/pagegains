@@ -36,10 +36,17 @@
 .hero-h1 {
   font-family: var(--pg-font-display);
   font-weight: 800;
-  font-size: clamp(52px, 8vw, 110px);
-  line-height: 0.88;
-  letter-spacing: -0.045em;
+  font-size: clamp(38px, 6vw, 84px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
   color: var(--pg-ink);
+}
+/* Deterministic line breaks — the copy is short enough to control the wrap, so
+   the headline never breaks awkwardly and "is" no longer trails the rotating
+   word's reserved grid width. Each line still wraps internally on small screens. */
+.hero-h1__line {
+  display: block;
+  text-wrap: balance;
 }
 
 .rotating-word {
@@ -81,6 +88,54 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+}
+
+/* —— Split highlight chip: red "wasting" → jagged seam → green "money" ——
+   Each word carries its own background so the split is always word-accurate.
+   The red segment's right edge is clipped into interlocking teeth; the green
+   segment underlaps it (negative margin) and shows through the notches, giving
+   an aggressive torn seam. The outer silhouette stays rectangular, so the hard
+   ink shadow reads the same as every other chip. NOTE: the green is a deliberate
+   step outside the locked coral/paper/ink/crimson palette — a custom deep shade
+   tuned to sit with the coral and keep white text legible (AA-large on white). */
+.chip-split {
+  --chip-green: #1c8f50;
+  position: relative;
+  display: inline-flex;
+  vertical-align: baseline;
+  background: transparent;
+  color: #fff;
+  font-style: normal;
+  transform: skew(-4deg);
+  box-shadow: 6px 6px 0 var(--pg-ink);
+}
+.chip-split__seg {
+  padding: 0 0.12em;
+}
+.chip-split__seg--red {
+  position: relative;
+  z-index: 2;
+  background: var(--pg-red);
+  padding-right: 0.5em;
+  /* jagged right edge — teeth tips reach the seg's right edge, notches recede 9px */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 9px) 0,
+    100% 16.6%,
+    calc(100% - 9px) 33.3%,
+    100% 50%,
+    calc(100% - 9px) 66.6%,
+    100% 83.3%,
+    calc(100% - 9px) 100%,
+    0 100%
+  );
+}
+.chip-split__seg--green {
+  position: relative;
+  z-index: 1;
+  background: var(--chip-green);
+  margin-left: -0.5em; /* underlap so green fills behind the red teeth */
+  padding-left: 0.6em;
 }
 
 /* —— Subline —— */

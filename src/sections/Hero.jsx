@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import Eyebrow from '../components/Eyebrow'
-import HighlightChip from '../components/HighlightChip'
 import URLBar from '../components/URLBar'
 import './Hero.css'
 
@@ -62,15 +61,28 @@ export default function Hero() {
         </Eyebrow>
 
         <h1 className="hero-h1" ref={h1Ref}>
-          Your{' '}
-          <span className="rotating-word" aria-label="pricing page">
-            {ROTATING.map((word) => (
-              <span key={word} aria-hidden="true">
-                {word}
+          <span className="hero-h1__line">
+            Your{' '}
+            <span className="rotating-word" aria-label="pricing page">
+              {ROTATING.map((word) => (
+                <span key={word} aria-hidden="true">
+                  {word}
+                </span>
+              ))}
+            </span>
+          </span>
+          <span className="hero-h1__line">
+            is{' '}
+            <mark className="chip-split">
+              <span className="chip-split__seg chip-split__seg--red">
+                wasting
               </span>
-            ))}
-          </span>{' '}
-          is <HighlightChip>losing</HighlightChip> conversions right now.
+              <span className="chip-split__seg chip-split__seg--green">
+                money
+              </span>
+            </mark>
+            .
+          </span>
         </h1>
 
         <p className="hero-subline" ref={sublineRef}>
