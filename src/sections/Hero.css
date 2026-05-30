@@ -1,0 +1,179 @@
+.hero-grid {
+  display: grid;
+  grid-template-columns: 65fr 35fr;
+  gap: 60px;
+  align-items: center;
+  max-width: var(--pg-max-width);
+  margin: 0 auto;
+  padding: 140px 40px 100px; /* extra top padding accounts for fixed nav */
+}
+
+/* —— Eyebrow live indicator —— */
+.hero-eyebrow {
+  display: inline;
+}
+.live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pg-crimson);
+  margin: 0 5px;
+  vertical-align: middle;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* —— H1 — rotating headline —— */
+.hero-h1 {
+  font-family: var(--pg-font-display);
+  font-weight: 800;
+  font-size: clamp(52px, 8vw, 110px);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  color: var(--pg-ink);
+}
+
+.rotating-word {
+  display: inline-grid; /* track auto-sizes to the widest word at every font-size */
+  vertical-align: baseline;
+}
+.rotating-word span {
+  grid-area: 1 / 1; /* all words share one cell — no collapse, no absolute positioning */
+  color: var(--pg-red);
+  opacity: 0;
+  animation: wordCycle 12s linear infinite;
+}
+.rotating-word span:nth-child(1) {
+  animation-delay: 0s;
+}
+.rotating-word span:nth-child(2) {
+  animation-delay: 3s;
+}
+.rotating-word span:nth-child(3) {
+  animation-delay: 6s;
+}
+.rotating-word span:nth-child(4) {
+  animation-delay: 9s;
+}
+
+@keyframes wordCycle {
+  0%,
+  5% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  10%,
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  25%,
+  100% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* —— Subline —— */
+.hero-subline {
+  font-family: var(--pg-font-display);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.35;
+  color: var(--pg-body);
+  margin: 24px 0 32px;
+}
+
+/* —— URLBar wrapper (GSAP transforms this, not the bar itself) —— */
+.hero-urlbar {
+  max-width: 560px;
+}
+
+/* —— Stats row —— */
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 20px;
+  list-style: none;
+  font-family: var(--pg-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.hero-stat {
+  position: relative;
+  display: flex;
+  gap: 4px;
+}
+/* separator dot between items */
+.hero-stat + .hero-stat::before {
+  content: '·';
+  position: absolute;
+  left: -18px;
+  color: var(--pg-line-strong);
+}
+.hero-stat__strong {
+  color: var(--pg-ink);
+  font-weight: 500;
+}
+.hero-stat__label {
+  color: var(--pg-mute);
+}
+
+/* —— Right column — floating audit screenshot —— */
+.hero-screenshot {
+  width: 100%;
+  max-width: 520px;
+  /* The asset is a long-form page capture; cap it to a contained window so it
+     floats as a panel (score + top ranked fixes) instead of a full-page tower
+     that would push the left column — and the URLBar — below the fold. */
+  max-height: 600px;
+  object-fit: cover;
+  object-position: top center;
+  transform: rotate(1.5deg);
+  box-shadow: var(--pg-shadow-float);
+  border-radius: var(--pg-radius-md);
+  margin-left: -20px; /* overlaps the left column slightly */
+  position: relative;
+  z-index: 2;
+  will-change: transform;
+}
+
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    padding: 100px 20px 60px;
+  }
+  .hero-screenshot {
+    transform: none;
+    margin-left: 0;
+    margin-top: 40px;
+    max-height: 460px;
+  }
+}
+
+/* Defense-in-depth: the JS guard skips the GSAP entrance, but the CSS keyframe
+   animations above need their own reduced-motion handling. Freeze them to a
+   single legible state. */
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
+  }
+  .rotating-word span {
+    animation: none;
+  }
+  /* keep the first word visible since all four overlap in one grid cell */
+  .rotating-word span:nth-child(1) {
+    opacity: 1;
+    transform: none;
+  }
+}
