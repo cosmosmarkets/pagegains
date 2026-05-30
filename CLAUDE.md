@@ -50,5 +50,7 @@ copy, and per-stage specs.
 ## Local tooling
 - Dev server: `npm run dev` (Vite, default `http://localhost:5173`). The legacy `node serve.mjs`
   (port 3000) only serves the static design-system/original mirror — not the React app.
-- Screenshot workflow per the parent CLAUDE.md exists but its puppeteer path points at a different
-  user profile (`C:/Users/nateh/...`); verify/relocate before relying on it on this machine.
+- Screenshots: `node screenshot.mjs <url> [label]` (e.g. `node screenshot.mjs http://localhost:5173 hero`).
+  Saves auto-incrementing PNGs to `temporary screenshots/` (gitignored). Puppeteer is installed
+  **outside the repo** at `C:/Users/cubit/pagegains-tools` (keeps Chromium out of the Vercel build);
+  `screenshot.mjs` resolves it from there, overridable via the `PUPPETEER_DIR` env var.
